@@ -1,3 +1,2 @@
 include ':app',
-        ':module-base-controller',
         ':module-business-video'

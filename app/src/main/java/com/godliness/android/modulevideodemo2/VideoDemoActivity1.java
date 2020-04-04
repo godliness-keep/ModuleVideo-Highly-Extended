@@ -35,7 +35,6 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
 
         mController.setVideoPath(mVideo, 0);
         mController.setVideoTitle("这里设置视频标题");
-
     }
 
     @Override
@@ -107,11 +106,11 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
 
     @Override
     public void onConfigurationOptions(ConfigOptions options) {
-        options.mDirectionSwitch = false;
+        options.mDirectionSwitch = true;
         options.mDragProgress = true;
         options.mShowCatalog = true;
         options.mShowDefinit = true;
-        options.mShowMore = false;
+        options.mShowMore = true;
         options.mShowSpeed = true;
     }
 
