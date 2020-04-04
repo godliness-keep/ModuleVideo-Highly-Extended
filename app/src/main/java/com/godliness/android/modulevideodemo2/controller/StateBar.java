@@ -71,28 +71,35 @@ public final class StateBar extends BaseVideoStateBar<ConfigOptions> {
         if (screenOrientationFromPortrait()) {
             mBack.setVisibility(View.VISIBLE);
 
-            if (openAnim) {
-                mMore.startAnimation(getShowAnimation());
+            if (mOptions.mShowMore) {
+                if (openAnim) {
+                    mMore.startAnimation(getShowAnimation());
+                }
+                mMore.setVisibility(View.VISIBLE);
             }
-            mMore.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void hide(boolean openAnim) {
-        if (screenOrientationFromPortrait()) {
-            if (mOptions.mShowMore) {
+        final boolean portrait = screenOrientationFromPortrait();
+        final boolean showMore = mOptions.mShowMore;
+        if (portrait) {
+            if (showMore) {
                 if (openAnim) {
                     mMore.startAnimation(getHideAnimation());
                 }
                 mMore.setVisibility(View.GONE);
             }
         } else {
+            if (showMore) {
+                mMore.setVisibility(View.GONE);
+            }
             mBack.setVisibility(View.GONE);
         }
     }
 
-    public void setStateBarListener(OnVideoStateBarListener callback) {
+    void setStateBarListener(OnVideoStateBarListener callback) {
         this.mStateBarCallback = callback;
     }
 

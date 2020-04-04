@@ -13,7 +13,6 @@ import com.godliness.android.modulevideodemo2.VideoBuilder;
  * Created by godliness on 2020-03-31.
  *
  * @author godliness
- * demo
  */
 public final class VideoController extends BaseVideoController<TitleBar, BaseVideoControllerBar, StateBar> {
 

@@ -50,6 +50,9 @@ public final class TitleBar extends BaseVideoTitleBar<ConfigOptions> implements 
     public void regEvent(boolean event) {
         mBack.setOnClickListener(event ? this : null);
         mMore.setOnClickListener(event ? this : null);
+
+        // Intercept events
+        getBarView().setOnClickListener(event ? this : null);
     }
 
     @Override

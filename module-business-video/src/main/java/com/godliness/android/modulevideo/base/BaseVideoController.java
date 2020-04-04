@@ -524,11 +524,17 @@ public abstract class BaseVideoController<TitleBar extends BaseVideoTitleBar, Bo
             if (pressBack) {
                 mVideoStateCallback.onBack();
             } else {
-                mVideoStateCallback.onSwitchOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                if (getControllerView().isEnabled()) {
+                    mShowing = true;
+                }
+                mVideoStateCallback.onSwitchDirection(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
         } else {
             if (getOptions().mDirectionSwitch) {
-                mVideoStateCallback.onSwitchOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                if (getControllerView().isEnabled()) {
+                    mShowing = true;
+                }
+                mVideoStateCallback.onSwitchDirection(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             } else {
                 mVideoStateCallback.onBack();
             }

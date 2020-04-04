@@ -17,7 +17,7 @@ public interface OnVideoStateListener<Options> {
 
     void onBack();
 
-    void onSwitchOrientation(int orientation);
+    void onSwitchDirection(int orientation);
 
     void onConfigurationOptions(Options options);
 }

@@ -60,7 +60,7 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
     }
 
     @Override
-    public void onSwitchOrientation(int orientation) {
+    public void onSwitchDirection(int orientation) {
         setRequestedOrientation(orientation);
     }
 
@@ -107,11 +107,11 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
 
     @Override
     public void onConfigurationOptions(ConfigOptions options) {
-        options.mDirectionSwitch = true;
+        options.mDirectionSwitch = false;
         options.mDragProgress = true;
         options.mShowCatalog = true;
         options.mShowDefinit = true;
-        options.mShowMore = true;
+        options.mShowMore = false;
         options.mShowSpeed = true;
     }
 

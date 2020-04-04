@@ -46,11 +46,14 @@ public final class LandscapeBar extends BaseVideoControllerBar<LandscapeBar.OnCo
     @Override
     public void regEvent(boolean event) {
         mPlay.setOnClickListener(event ? this : null);
+
+        // Intercept events
+        getBarView().setOnClickListener(event ? this : null);
     }
 
     @Override
     public void updatePlayWidgetState(boolean isPlaying) {
-        mPlay.setImageResource(isPlaying ? R.drawable.modulevideo_ic_media_pause : R.drawable.modulevideo_ic_media_play);
+        mPlay.setImageResource(isPlaying ? R.drawable.modulevideo_selector_iv_pause : R.drawable.modulevideo_selector_iv_play);
     }
 
     @Override
