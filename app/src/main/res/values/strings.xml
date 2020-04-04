@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ModuleVideoDemo2</string>
+
+    <string name="modulevideo_string_network_disconnected">网络未连接，请检查网络设置</string>
+    <string name="modulevideo_string_play_error">播放出错了，错误代码：</string>
+    <string name="modulevideo_string_play_completion">播放完成</string>
+</resources>
