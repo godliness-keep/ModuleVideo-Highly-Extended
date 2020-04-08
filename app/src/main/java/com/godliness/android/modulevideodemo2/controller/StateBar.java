@@ -150,11 +150,12 @@ public final class StateBar extends BaseVideoStateBar<ConfigOptions> {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        final boolean portrait = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
         if(!getParent().isEnabled()){
             showOrHideShadowBack(true);
-            showOrHideShadowOrientation(mOptions.mDirectionSwitch && newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
+            showOrHideShadowOrientation(mOptions.mDirectionSwitch && portrait);
         }else{
-            showOrHideShadowBack(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
+            showOrHideShadowBack(portrait);
         }
     }
 
