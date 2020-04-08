@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.godliness.android.modulevideo.OnVideoStateListener;
+import com.godliness.android.modulevideo.detector.GravityDetector;
 import com.godliness.android.modulevideo.ijk.IjkVideoView;
 import com.godliness.android.modulevideodemo2.controller.VideoController;
 
@@ -18,12 +19,14 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
  *
  * @author godliness
  * <p>
- * 2、StateBar
+ * 视频控制器组件demo
  */
 public final class VideoDemoActivity1 extends AppCompatActivity implements OnVideoControllerListener, OnVideoStateListener<ConfigOptions> {
 
     private final String mVideo = "http://download.yxybb.com/bbvideo/2017/9/hlwbxxqyfxq1_3.mp4";
     private VideoController mController;
+
+    private GravityDetector mDetector;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,10 +48,8 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mController != null) {
-            if (mController.onKeyDown(keyCode)) {
-                return true;
-            }
+        if (mController.onKeyDown(keyCode)) {
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -89,6 +90,30 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
         return "播放完成了";
     }
 
+    protected boolean hasGravity() {
+        return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mController.pause();
+
+        if (mDetector != null) {
+            mDetector.disable();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mController.start();
+
+        if (hasGravity()) {
+            openGravityDetector();
+        }
+    }
+
     @Override
     public boolean onError(IMediaPlayer mediaPlayer) {
         return false;
@@ -106,7 +131,7 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
 
     @Override
     public void onConfigurationOptions(ConfigOptions options) {
-        options.mDirectionSwitch = true;
+        options.mDirectionSwitch = hasGravity();
         options.mDragProgress = true;
         options.mShowCatalog = true;
         options.mShowDefinit = true;
@@ -118,5 +143,12 @@ public final class VideoDemoActivity1 extends AppCompatActivity implements OnVid
     protected void onDestroy() {
         super.onDestroy();
         mController.release();
+    }
+
+    private void openGravityDetector() {
+        if (mDetector == null) {
+            mDetector = new GravityDetector(this);
+        }
+        mDetector.enable();
     }
 }

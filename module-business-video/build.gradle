@@ -27,4 +27,6 @@ dependencies {
     implementation 'tv.danmaku.ijk.media:ijkplayer-armv5:0.8.0'
     implementation 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.8.0'
     implementation 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.0'
+
+//    api project(':module-base-controller')
 }

@@ -7,6 +7,7 @@ import com.godliness.android.modulevideo.ijk.IjkVideoView;
  * Created by godliness on 2020-04-03.
  *
  * @author godliness
+ * 用于辅助构建视频控制器组件
  */
 public abstract class Builder<T extends Builder, Controller extends BaseVideoController> {
 

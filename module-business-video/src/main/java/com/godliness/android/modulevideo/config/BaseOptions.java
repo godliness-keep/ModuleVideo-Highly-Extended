@@ -5,7 +5,7 @@ package com.godliness.android.modulevideo.config;
  *
  * @author godliness
  */
-public abstract class BaseOptions {
+public class BaseOptions {
     /**
      * 是否允许方向切换
      */

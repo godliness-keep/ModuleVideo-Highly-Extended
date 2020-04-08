@@ -12,6 +12,7 @@ import com.godliness.android.modulevideodemo2.R;
  * Created by godliness on 2020-03-31.
  *
  * @author godliness
+ * 标题栏
  */
 public final class TitleBar extends BaseVideoTitleBar<ConfigOptions> implements View.OnClickListener {
 
@@ -79,7 +80,7 @@ public final class TitleBar extends BaseVideoTitleBar<ConfigOptions> implements 
         }
     }
 
-    public void setTitlebarListener(OnTitleBarListener callback) {
+    void setTitlebarListener(OnTitleBarListener callback) {
         this.mCallback = callback;
     }
 

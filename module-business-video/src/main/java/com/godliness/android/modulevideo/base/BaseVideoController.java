@@ -22,11 +22,17 @@ import java.util.Formatter;
 import java.util.Locale;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 /**
  * Created by godliness on 2020-03-31.
  *
  * @author godliness
+ * 视频控制器基础组件
+ * Option optimize of IjkPlayer from issues:https://github.com/bilibili/ijkplayer/issues/4069
+ * Option optimize of IjkPlayer from jianshu:https://www.jianshu.com/p/843c86a9e9ad
+ * Cache optimize of IjkPlayer from jianshu:https://www.jianshu.com/p/9e7ebabf3a3f
+ * VideoController:https://github.com/godliness-keep/ModuleVideo-Highly-Extended
  */
 @SuppressWarnings({"WeakerAccess", "unchecked", "unused"})
 public abstract class BaseVideoController<TitleBar extends BaseVideoTitleBar, BottomBar extends BaseVideoControllerBar, StateBar extends BaseVideoStateBar>
@@ -78,14 +84,13 @@ public abstract class BaseVideoController<TitleBar extends BaseVideoTitleBar, Bo
      */
     protected abstract <Options extends BaseOptions> Options createOptions();
 
-    public void notifyControllerToRestoreInitialState() {
+    public final void notifyControllerToRestoreInitialState() {
         getControllerView().setEnabled(false);
         pause();
         hide(false);
         final StateBar stateBar = getStateBar();
         if (stateBar != null) {
-            stateBar.onLoading(true);
-            stateBar.showShadow();
+            stateBar.onRestore();
         }
     }
 
@@ -330,6 +335,7 @@ public abstract class BaseVideoController<TitleBar extends BaseVideoTitleBar, Bo
 
     @Override
     public final void onPrepared(IMediaPlayer mediaPlayer) {
+        setMediaOptions(mediaPlayer);
         seekTo(mCurrentPosition);
         if (hasPrepared(mediaPlayer)) {
             start();
@@ -340,21 +346,31 @@ public abstract class BaseVideoController<TitleBar extends BaseVideoTitleBar, Bo
         this.mCompleted = false;
     }
 
+    private void setMediaOptions(IMediaPlayer iMediaPlayer) {
+        IjkMediaPlayer mediaPlayer = null;
+        if (iMediaPlayer instanceof IjkMediaPlayer) {
+            mediaPlayer = (IjkMediaPlayer) iMediaPlayer;
+        }
+        if (mediaPlayer != null) {
+            mediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 1024 * 10);
+            mediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1);
+        }
+    }
+
     protected final void doPlayState() {
         if (mShowing) {
             show();
         }
         final BottomBar bottomBar = getBottomBar();
-        if (isPlaying()) {
+        final boolean isPlaying = isPlaying();
+        if (bottomBar != null) {
+            bottomBar.updatePlayWidgetState(!isPlaying);
+        }
+
+        if (isPlaying) {
             pause();
-            if (bottomBar != null) {
-                bottomBar.updatePlayWidgetState(false);
-            }
         } else {
             start();
-            if (bottomBar != null) {
-                bottomBar.updatePlayWidgetState(true);
-            }
         }
 
         final StateBar stateBar = getStateBar();
@@ -362,74 +378,6 @@ public abstract class BaseVideoController<TitleBar extends BaseVideoTitleBar, Bo
             stateBar.hideShadow(false);
         }
         mCompleted = false;
-    }
-
-    private SeekBar.OnSeekBarChangeListener getSeekBarChangeCallback() {
-        if (mSeekBarChangeCallback == null) {
-            mSeekBarChangeCallback = new SeekBar.OnSeekBarChangeListener() {
-
-                private long mChangePosition;
-
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (!fromUser) {
-                        return;
-                    }
-
-                    long duration = getDuration();
-                    mChangePosition = (duration * progress) / 1000L;
-
-                    final BottomBar bottomBar = getBottomBar();
-                    if (bottomBar != null) {
-                        bottomBar.updateCurrentDragProgress(stringForTime((int) mChangePosition));
-                    }
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                    final BaseOptions options = getOptions();
-                    if (!options.mDragProgress) {
-                        final int currentPosition = getCurrentPosition();
-                        if (currentPosition > options.mMaxDragPosition) {
-                            options.mMaxDragPosition = currentPosition;
-                        }
-                    }
-                    show(3600000);
-                    mControllerHandler.removeMessages(UPDATE_PROGRESS_MSG);
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    final BaseOptions options = getOptions();
-                    if (options.mDragProgress) {
-                        seekTo((int) mChangePosition);
-                    } else if (options.mMaxDragPosition > 0) {
-                        if (mChangePosition <= options.mMaxDragPosition) {
-                            seekTo((int) mChangePosition);
-                        } else {
-                            seekTo(options.mMaxDragPosition);
-                        }
-                    }
-
-                    setProgress();
-                    final BottomBar bottomBar = getBottomBar();
-                    if (bottomBar != null) {
-                        bottomBar.updatePlayWidgetState(isPlaying());
-                    }
-
-                    if (mCompleted) {
-                        final StateBar stateBar = getStateBar();
-                        if (stateBar != null) {
-                            stateBar.hideShadow(false);
-                        }
-                        mCompleted = false;
-                    }
-
-                    show(DEFAULT_HIDE_CONTROLLER_TIMEOUT);
-                }
-            };
-        }
-        return mSeekBarChangeCallback;
     }
 
     private int setProgress() {
@@ -562,5 +510,73 @@ public abstract class BaseVideoController<TitleBar extends BaseVideoTitleBar, Bo
 
     private void updateConfigurationOptions(BaseOptions options) {
         mVideoStateCallback.onConfigurationOptions(options);
+    }
+
+    private SeekBar.OnSeekBarChangeListener getSeekBarChangeCallback() {
+        if (mSeekBarChangeCallback == null) {
+            mSeekBarChangeCallback = new SeekBar.OnSeekBarChangeListener() {
+
+                private long mChangePosition;
+
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (!fromUser) {
+                        return;
+                    }
+
+                    long duration = getDuration();
+                    mChangePosition = (duration * progress) / 1000L;
+
+                    final BottomBar bottomBar = getBottomBar();
+                    if (bottomBar != null) {
+                        bottomBar.updateCurrentDragProgress(stringForTime((int) mChangePosition));
+                    }
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    final BaseOptions options = getOptions();
+                    if (!options.mDragProgress) {
+                        final int currentPosition = getCurrentPosition();
+                        if (currentPosition > options.mMaxDragPosition) {
+                            options.mMaxDragPosition = currentPosition;
+                        }
+                    }
+                    show(3600000);
+                    mControllerHandler.removeMessages(UPDATE_PROGRESS_MSG);
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    final BaseOptions options = getOptions();
+                    if (options.mDragProgress) {
+                        seekTo((int) mChangePosition);
+                    } else if (options.mMaxDragPosition > 0) {
+                        if (mChangePosition <= options.mMaxDragPosition) {
+                            seekTo((int) mChangePosition);
+                        } else {
+                            seekTo(options.mMaxDragPosition);
+                        }
+                    }
+
+                    setProgress();
+                    final BottomBar bottomBar = getBottomBar();
+                    if (bottomBar != null) {
+                        bottomBar.updatePlayWidgetState(isPlaying());
+                    }
+
+                    if (mCompleted) {
+                        final StateBar stateBar = getStateBar();
+                        if (stateBar != null) {
+                            stateBar.hideShadow(false);
+                        }
+                        mCompleted = false;
+                    }
+
+                    show(DEFAULT_HIDE_CONTROLLER_TIMEOUT);
+                }
+            };
+        }
+        return mSeekBarChangeCallback;
     }
 }

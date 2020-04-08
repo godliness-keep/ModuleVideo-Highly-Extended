@@ -14,6 +14,7 @@ import com.godliness.android.modulevideodemo2.R;
  * Created by godliness on 2020-03-31.
  *
  * @author godliness
+ * 竖屏方向下视频控制栏
  */
 public final class PortraitBar extends BaseVideoControllerBar<LandscapeBar.OnControllerBarListener, ConfigOptions> implements View.OnClickListener {
 
@@ -55,7 +56,7 @@ public final class PortraitBar extends BaseVideoControllerBar<LandscapeBar.OnCon
 
     @Override
     public void updateCurrentDragProgress(String position) {
-        mCurrent.setText(position);
+        mCurrent.setText(String.format("%s/", position));
     }
 
     @Override

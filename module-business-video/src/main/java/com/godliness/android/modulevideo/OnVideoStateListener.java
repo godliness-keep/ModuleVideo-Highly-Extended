@@ -1,5 +1,7 @@
 package com.godliness.android.modulevideo;
 
+import com.godliness.android.modulevideo.config.BaseOptions;
+
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 /**
@@ -7,7 +9,7 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
  *
  * @author godliness
  */
-public interface OnVideoStateListener<Options> {
+public interface OnVideoStateListener<Options extends BaseOptions> {
 
     String onCompleted();
 

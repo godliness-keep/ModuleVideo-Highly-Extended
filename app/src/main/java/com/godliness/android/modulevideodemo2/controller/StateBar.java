@@ -14,6 +14,8 @@ import com.godliness.android.modulevideodemo2.R;
  * Created by godliness on 2020-03-31.
  *
  * @author godliness
+ * <p>
+ * 状态栏
  */
 public final class StateBar extends BaseVideoStateBar<ConfigOptions> {
 
@@ -63,6 +65,7 @@ public final class StateBar extends BaseVideoStateBar<ConfigOptions> {
             mSwitcher.setVisibility(options.mDirectionSwitch ? View.VISIBLE : View.GONE);
         } else {
             mSwitcher.setVisibility(View.GONE);
+            mBack.setVisibility(View.GONE);
         }
     }
 
@@ -131,8 +134,25 @@ public final class StateBar extends BaseVideoStateBar<ConfigOptions> {
 
     @Override
     public void onLoading(boolean loading) {
-        mLoadingView.setVisibility(loading ? View.VISIBLE : View.GONE);
         hideErrorBar();
+        mLoadingView.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onRestore() {
+        onLoading(true);
+        hideErrorBar();
+        showOrHideShadowBack(true);
+        showOrHideShadowOrientation(screenOrientationFromPortrait() && mOptions.mDirectionSwitch);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mBack.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

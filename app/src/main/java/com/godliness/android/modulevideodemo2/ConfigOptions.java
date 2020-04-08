@@ -6,6 +6,7 @@ import com.godliness.android.modulevideo.config.BaseOptions;
  * Created by godliness on 2020-04-04.
  *
  * @author godliness
+ * 更多配置选项
  */
 public final class ConfigOptions extends BaseOptions {
 

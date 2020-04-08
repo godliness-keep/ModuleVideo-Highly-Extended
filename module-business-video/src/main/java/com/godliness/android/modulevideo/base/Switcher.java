@@ -14,7 +14,7 @@ import android.view.WindowManager;
  * Created by godliness on 2020-03-05.
  *
  * @author godliness
- * 屏幕方向切换器
+ * 辅助视频控制完成屏幕方向切换
  */
 public class Switcher {
 
@@ -23,6 +23,9 @@ public class Switcher {
 
     private int mHeightOfPortrait = -1;
 
+    /**
+     * 切换到横屏
+     */
     protected void switchToLandscape() {
         setSystemUIHide();
         adjustPlayerHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -30,6 +33,9 @@ public class Switcher {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+    /**
+     * 切换到竖屏
+     */
     protected void switchToPortrait() {
         setSystemUIShow();
         adjustPlayerHeight(getPortrainHeight());
@@ -108,7 +114,7 @@ public class Switcher {
     private int getPortrainHeight() {
         if (mHeightOfPortrait <= 0) {
             final Display display = getWindowManager().getDefaultDisplay();
-            return mHeightOfPortrait = display.getWidth() / 2 ;
+            return mHeightOfPortrait = display.getWidth() / 2;
         }
         return mHeightOfPortrait;
     }
